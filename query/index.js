@@ -15,12 +15,12 @@ app.use(cors());
 //         comments: [{
 //                 id: "commentId",
 //                 content: "comment content",
-// status: "pending|approved|rejected"
+//                 status: "pending|approved|rejected",
 //             },
 //             {
 //                 id: "commentId",
 //                 content: "comment content",
-//                 status: "pending|approved|rejected"
+//                 status: "pending|approved|rejected",
 //             },
 //         ],
 //     },

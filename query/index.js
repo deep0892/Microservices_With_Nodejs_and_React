@@ -12,7 +12,7 @@ app.use(cors());
 //     postId: {
 //         id: "postId",
 //         title: "post title",
-//         comment: [{
+//         comments: [{
 //                 id: "commentId",
 //                 content: "comment content",
 //             },
@@ -27,27 +27,26 @@ app.use(cors());
 const posts = {};
 
 app.get("/posts", (req, res) => {
-    return res.send(posts);
+  return res.send(posts);
 });
 
-app.post("/events", async(req, res) => {
-    const { type, data } = req.body;
+app.post("/events", async (req, res) => {
+  const { type, data } = req.body;
 
-    if (type === "CommentCreated") {
-        const { id, title } = data;
-        post[id] = { id, title, comment: [] };
-    }
+  if (type === "PostCreated") {
+    const { id, title } = data;
+    posts[id] = { id, title, comments: [] };
+  }
 
-    if (type === "CommentCreated") {
-        const { id, content, postId } = data;
+  if (type === "CommentCreated") {
+    const { id, content, postId } = data;
 
-        const post = post[postId];
-        post.comment.push({ id, content });
-    }
-
-    return res.send({});
+    const post = posts[postId];
+    post.comments.push({ id, content });
+  }
+  return res.send({});
 });
 
 app.listen(4002, (args) => {
-    console.log("Query service listening on port 4002");
+  console.log("Query service listening on port 4002");
 });

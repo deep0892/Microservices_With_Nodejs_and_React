@@ -11,38 +11,60 @@ app.use(cors());
 const commentsByPostId = {};
 
 app.get("/posts/:id/comments", (req, res) => {
-    return res.send(commentsByPostId[req.params.id] || []);
+  return res.send(commentsByPostId[req.params.id] || []);
 });
 
-app.post("/posts/:id/comments", async(req, res) => {
-    const commentId = randomBytes(4).toString("hex");
-    const { content } = req.body;
+app.post("/posts/:id/comments", async (req, res) => {
+  const commentId = randomBytes(4).toString("hex");
+  const { content } = req.body;
 
-    const comments = commentsByPostId[req.params.id] || [];
-    comments.push({
-        id: commentId,
-        content,
+  const comments = commentsByPostId[req.params.id] || [];
+  comments.push({
+    id: commentId,
+    content,
+    status: "pending",
+  });
+  commentsByPostId[req.params.id] = comments;
+
+  await axios.post("http://localhost:4005/events", {
+    type: "CommentCreated",
+    data: {
+      id: commentId,
+      content,
+      postId: req.params.id,
+      status: "pending",
+    },
+  });
+
+  return res.status(201).send(comments);
+});
+
+app.post("/events", async (req, res) => {
+  console.log("Receieved Event", req.body.type);
+  const { type, data } = req.body;
+
+  if (type === "CommentModerated") {
+    const { postId, id, status, content } = data;
+    const comments = commentsByPostId[postId];
+    const comment = comments.find((comment) => {
+      return comment.id === id;
     });
-    commentsByPostId[req.params.id] = comments;
+    comment.status = status;
 
     await axios.post("http://localhost:4005/events", {
-        type: "CommentCreated",
-        data: {
-            id: commentId,
-            content,
-            postId: req.params.id,
-        },
+      type: "CommentUpdated",
+      data: {
+        id,
+        content,
+        status,
+        postId,
+      },
     });
+  }
 
-    return res.status(201).send(comments);
-});
-
-app.post("/events", (req, res) => {
-    console.log("Receieved Event", req.body.type);
-
-    res.send({});
+  res.send({});
 });
 
 app.listen(4001, (args) => {
-    console.log("Comments service listening on port 4001");
+  console.log("Comments service listening on port 4001");
 });

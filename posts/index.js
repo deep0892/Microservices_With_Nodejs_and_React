@@ -11,31 +11,32 @@ app.use(cors());
 const posts = {};
 
 app.get("/posts", (req, res) => {
-    return res.send(posts);
+  return res.send(posts);
 });
 
-app.post("/posts", async(req, res) => {
-    const id = randomBytes(4).toString("hex");
-    const { title } = req.body;
-    posts[id] = { id, title };
+app.post("/posts", async (req, res) => {
+  const id = randomBytes(4).toString("hex");
+  const { title } = req.body;
+  posts[id] = { id, title };
 
-    await axios.post("http://localhost:4005/events", {
-        type: "PostCreated",
-        data: {
-            id,
-            title,
-        },
-    });
+  await axios.post("http://localhost:4005/events", {
+    type: "PostCreated",
+    data: {
+      id,
+      title,
+    },
+  });
 
-    return res.status(201).send(posts[id]);
+  return res.status(201).send(posts[id]);
 });
 
 app.post("/events", (req, res) => {
-    console.log("Receieved Event", req.body.type);
+  console.log("Receieved Event", req.body.type);
 
-    res.send({});
+  res.send({});
 });
 
 app.listen(4000, (args) => {
-    console.log("Posts service listening on port 4000");
+  console.log("v21");
+  console.log("Posts service listening on port 4000");
 });

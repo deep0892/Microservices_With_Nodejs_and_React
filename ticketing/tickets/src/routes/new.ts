@@ -24,7 +24,7 @@ router.post(
       userId: req.currentUser!.id,
     });
     await ticket.save();
-    return res.sendStatus(201).send(ticket);
+    return res.status(201).send(ticket);
   }
 );
 

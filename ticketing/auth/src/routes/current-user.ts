@@ -1,6 +1,6 @@
 import expres, { Request, Response } from 'express';
 
-import { currentUser } from '../middlewares/current-user';
+import { currentUser } from '@dipstickets/common';
 
 const router = expres.Router();
 

@@ -1,13 +1,9 @@
 import express from 'express';
-
 import 'express-async-errors';
-
 import bodyParser from 'body-parser';
-
 import cookieSession from 'cookie-session';
+import { NotFoundError, errorHandler } from '@dipstickets/common';
 
-import { NotFoundError } from './errors/not-found-error.ts';
-import { errorHandler } from './middlewares/error-handler';
 import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
